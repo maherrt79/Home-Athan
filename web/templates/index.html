@@ -137,6 +137,17 @@
                         </div>
 
                         <div class="form-group">
+                            <label>High Latitude Rule</label>
+                            <select id="high-lat-rule">
+                                <option value="NONE">None</option>
+                                <option value="MIDDLENIGHT">Middle of Night</option>
+                                <option value="ONESEVENTH">One Seventh</option>
+                                <option value="ANGLEBASED">Angle Based</option>
+                                <option value="NEARESTLAT">Nearest Latitude</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label>Hijri Offset</label>
                             <select id="hijri-offset">
                                 <option value="-2">-2 Days</option>
@@ -152,7 +163,14 @@
                     <section class="calc-column">
                         <h2 class="section-title">Location</h2>
                         <div class="form-group">
-                            <label>Current Location</label>
+                            <label>Country</label>
+                            <select id="country-select">
+                                <!-- Populated by JS -->
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>City</label>
                             <select id="city-select">
                                 <option value="custom">Custom Location</option>
                                 <!-- Populated by JS -->
@@ -208,7 +226,7 @@
         </main>
     </div>
 
-    <script src="/static/script.js?v=8"></script>
+    <script src="/static/script.js?v=9"></script>
 </body>
 
 </html>

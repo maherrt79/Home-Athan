@@ -101,6 +101,14 @@ class PrayerCalculator:
                         isha_angle=float(isha_angle) if isha_angle is not None else None
                     )
 
+            # High Latitude Rule
+            high_lat_rule = self.config.get("location", "high_latitude_rule")
+            if high_lat_rule and high_lat_rule != "NONE":
+                try:
+                    it.set_extreme_latitude_rule(high_lat_rule)
+                except Exception as e:
+                    logger.warning(f"Failed to set high latitude rule '{high_lat_rule}': {e}")
+
             pt = it.prayer_times()
 
             times = {

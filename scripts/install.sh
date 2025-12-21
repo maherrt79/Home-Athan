@@ -15,7 +15,16 @@ fi
 # 3. Install Dependencies
 # Skip Cython compilation for zeroconf/others to avoid hangs on Pi Zero
 export SKIP_CYTHON=1
+
+# Fix for "No space left on device" in /tmp (common on Pis)
+mkdir -p pip_tmp
+export TMPDIR=$(pwd)/pip_tmp
+echo "Using disk-based temp dir: $TMPDIR"
+
 ./venv/bin/pip install -r requirements.txt
+
+# Cleanup temp dir
+rm -rf pip_tmp
 
 # 4. Setup Service
 echo "Setting up systemd service..."

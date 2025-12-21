@@ -10,10 +10,13 @@ devices:
   echo_enabled: false
 location:
   asr_method: STANDARD
-  calculation_method: MWL
-  hijri_offset: -1
-  latitude: 53.4808
-  longitude: -2.2426
+  calculation_method: ISNA
+  city: London
+  country: United Kingdom
+  high_latitude_rule: ANGLEBASED
+  hijri_offset: 0
+  latitude: 51.5
+  longitude: -0.1
   timezone: Europe/London
 prayers:
   Asr:

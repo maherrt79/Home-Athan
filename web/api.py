@@ -16,6 +16,9 @@ class LocationConfig(BaseModel):
     calculation_method: str
     asr_method: str
     hijri_offset: int = 0
+    country: Optional[str] = "United Kingdom"
+    city: Optional[str] = None
+    high_latitude_rule: Optional[str] = None
 
 class AudioConfig(BaseModel):
     default_file: str
@@ -125,9 +128,15 @@ async def get_audio_files(request: Request):
         logger.error(f"Error listing audio files: {e}")
         return {"athan": [], "reminders": []}
 
+@router.get("/countries")
+async def get_countries():
+    """List supported countries and their cities."""
+    from core.cities import COUNTRIES
+    return COUNTRIES
+
 @router.get("/cities")
 async def get_cities():
-    """List supported cities."""
+    """List supported cities (Legacy: returns UK cities)."""
     from core.cities import UK_CITIES
     return UK_CITIES
 

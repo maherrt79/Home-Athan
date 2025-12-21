@@ -35,7 +35,27 @@ run_rsync() {
 
 echo "🚀 Deploying Home Athan Updates..."
 
-# Sync files
+# 1. Configure System Resources (Swap check for memory-heavy installs)
+echo "🔧 Checking system resources..."
+run_ssh $HOST "
+    if [ ! -f /swapfile ]; then
+        echo 'running low on memory? creating 2GB swapfile...'
+        sudo fallocate -l 2G /swapfile
+        sudo chmod 600 /swapfile
+        sudo mkswap /swapfile
+        sudo swapon /swapfile
+        echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+        echo '✅ Swapfile created and enabled.'
+    else
+        echo '✅ Swap configuration looks good.'
+    fi
+"
+
+# 2. Stop Service & Clean Up
+echo "🧹 Cleaning up previous setup..."
+run_ssh $HOST "sudo systemctl stop home-athan || true && find $REMOTE_DIR -type d -name '__pycache__' -exec rm -rf {} + 2>/dev/null && echo '✅ Old service stopped and cache cleaned.'"
+
+# 3. Sync files
 echo "📦 Syncing files..."
 run_rsync -avzP "${EXCLUDES[@]}" ./ $HOST:$REMOTE_DIR/
 

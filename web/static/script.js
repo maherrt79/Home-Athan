@@ -54,9 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('save-calc-btn').addEventListener('click', saveCalculationConfig);
     document.getElementById('save-schedule-btn').addEventListener('click', saveScheduleConfig);
     document.getElementById('city-select').addEventListener('change', handleCityChange);
+    document.getElementById('country-select').addEventListener('change', handleCountryChange);
 });
 
-let cityData = []; // Store fetched cities
+let countriesData = {}; // Store fetched countries
+let cityData = []; // Store current cities for easy access
+
 
 let nextPrayerTime = null;
 
@@ -186,29 +189,30 @@ async function fetchConfig() {
         const [configRes, audioRes, citiesRes] = await Promise.all([
             fetch('/api/config'),
             fetch('/api/audio-files'),
-            fetch('/api/cities')
+            fetch('/api/countries')
         ]);
 
         const data = await configRes.json();
         const audioData = await audioRes.json();
-        cityData = await citiesRes.json();
-        // Handle both old list format (just in case) and new dict format
+        countriesData = await citiesRes.json();
+
+        // Handle audio files list
         const athanFiles = Array.isArray(audioData) ? audioData : (audioData.athan || []);
         const reminderFiles = Array.isArray(audioData) ? [] : (audioData.reminders || []);
 
-        // Populate City Dropdown
-        const citySelect = document.getElementById('city-select');
-        // Keep "custom" option
-        citySelect.innerHTML = '<option value="custom">Custom Location</option>';
+        // Populate Country Dropdown
+        const countrySelect = document.getElementById('country-select');
+        countrySelect.innerHTML = ''; // Clear existing
 
-        cityData.forEach(city => {
+        Object.keys(countriesData).forEach(country => {
             const opt = document.createElement('option');
-            opt.value = city.name;
-            opt.textContent = city.name;
-            opt.dataset.lat = city.lat;
-            opt.dataset.lng = city.lng;
-            citySelect.appendChild(opt);
+            opt.value = country;
+            opt.textContent = country;
+            countrySelect.appendChild(opt);
         });
+
+        // Populate City Dropdown (Initial)
+        const citySelect = document.getElementById('city-select');
 
         // Fill form
         if (data.location) {
@@ -219,16 +223,50 @@ async function fetchConfig() {
             document.getElementById('hijri-offset').value = data.location.hijri_offset || 0;
             document.getElementById('timezone').value = data.location.timezone || 'Europe/London';
 
-            // Try to match current lat/lon to a city
-            const matchingCity = cityData.find(c =>
-                Math.abs(c.lat - data.location.latitude) < 0.001 &&
-                Math.abs(c.lng - data.location.longitude) < 0.001
-            );
+            // Set High Latitude Rule
+            const hlRule = document.getElementById('high-lat-rule');
+            if (hlRule) hlRule.value = data.location.high_latitude_rule || 'NONE';
 
-            if (matchingCity) {
-                citySelect.value = matchingCity.name;
+            // Set Country
+            // If data has country, use it. Else default to United Kingdom if present, or first key.
+            let country = data.location.country || "United Kingdom";
+            // Validate country exists in data
+            if (!countriesData[country]) {
+                country = Object.keys(countriesData)[0];
+            }
+            countrySelect.value = country;
+
+            // Populate Cities for this country
+            updateCityDropdown(country);
+
+            // Set City
+            if (data.location.city) {
+                citySelect.value = data.location.city;
+                // If city is custom, value won't match, so it falls to 'custom' via logic or we explictly handle
+                // But wait, updateCityDropdown adds 'custom'.
+                // Check if city exists in list
+                if (!cityData.find(c => c.name === data.location.city)) {
+                    citySelect.value = 'custom';
+                }
             } else {
-                citySelect.value = 'custom';
+                // Try to match current lat/lon to a city in current country
+                const matchingCity = cityData.find(c =>
+                    Math.abs(c.lat - data.location.latitude) < 0.001 &&
+                    Math.abs(c.lng - data.location.longitude) < 0.001
+                );
+
+                if (matchingCity) {
+                    citySelect.value = matchingCity.name;
+                } else {
+                    citySelect.value = 'custom';
+                }
+            }
+        } else {
+            // Default init (if no config?)
+            const defaultCountry = "United Kingdom";
+            if (countriesData[defaultCountry]) {
+                countrySelect.value = defaultCountry;
+                updateCityDropdown(defaultCountry);
             }
         }
 
@@ -557,7 +595,10 @@ async function saveCalculationConfig() {
             calculation_method: __e('calc-method').value,
             asr_method: __e('asr-method').value,
             hijri_offset: parseInt(__e('hijri-offset').value),
-            timezone: __e('timezone').value
+            timezone: __e('timezone').value,
+            high_latitude_rule: __e('high-lat-rule').value,
+            country: __e('country-select').value,
+            city: __e('city-select').value !== 'custom' ? __e('city-select').value : null
         }
         // No audio/prayers/devices data sent, so config manager should match & update just location
     };
@@ -759,6 +800,35 @@ function toggleMasterEnable(prayer, isEnabled) {
 
     if (athanBody) athanBody.style.display = isEnabled ? 'block' : 'none';
     if (pillGroup) pillGroup.style.display = isEnabled ? 'flex' : 'none';
+}
+
+function handleCountryChange() {
+    const country = document.getElementById('country-select').value;
+    updateCityDropdown(country);
+
+    // Select first city by default and update lat/lon
+    if (cityData.length > 0) {
+        const citySelect = document.getElementById('city-select');
+        citySelect.selectedIndex = 1; // 0 is custom, 1 is first city
+        handleCityChange();
+    }
+}
+
+function updateCityDropdown(country) {
+    const cities = countriesData[country] || [];
+    cityData = cities; // Update global
+
+    const citySelect = document.getElementById('city-select');
+    citySelect.innerHTML = '<option value="custom">Custom Location</option>';
+
+    cities.forEach(city => {
+        const opt = document.createElement('option');
+        opt.value = city.name;
+        opt.textContent = city.name;
+        opt.dataset.lat = city.lat;
+        opt.dataset.lng = city.lng;
+        citySelect.appendChild(opt);
+    });
 }
 
 function handleCityChange() {
