@@ -1,0 +1,22 @@
+services:
+  home-athan:
+    build: .
+    container_name: home-athan
+    # "host" network mode is CRITICAL for:
+    # 1. Google Cast (Chromecast) discovery (needs mDNS)
+    # 2. Local network access
+    network_mode: host
+
+    restart: unless-stopped
+
+    volumes:
+      # Mount source code for "Dev Mode" (Updates don't need rebuilds)
+      - ./:/app
+      # Persist configuration
+      - ./config:/app/config
+      # Persist audio files
+      - ./audio:/app/audio
+
+    environment:
+      # Set your timezone here to ensure correct prayer times
+      - TZ=UTC

@@ -1,0 +1,124 @@
+audio:
+  default_file: athan_alqahera.mp3
+  fade_in: true
+  reminder_audio_file: beep.mp3
+  reminder_lang: en
+  reminder_type: beep
+  volume_default: 0.5
+devices:
+  cast_enabled: true
+  echo_enabled: false
+location:
+  asr_method: STANDARD
+  calculation_method: MWL
+  hijri_offset: -1
+  latitude: 53.4808
+  longitude: -2.2426
+  timezone: Europe/London
+prayers:
+  Asr:
+    athan_audio_file: athan_medina.mp3
+    athan_enabled: true
+    athan_offset: 0
+    athan_timing: before
+    athan_volume: 0.5
+    audio_file: null
+    enabled: true
+    enabled_devices:
+    - 19f9e88c-3e04-9eae-1c42-9aad399f1b60
+    - efbfb06a-92c0-2182-794d-c726743712e1
+    - 35d86530-3bc5-b8ad-76f9-bacfe97e619e
+    reminder_audio_file: null
+    reminder_enabled: false
+    reminder_offset: 0
+    reminder_timing: before
+    reminder_volume: 0.3
+    volume: null
+  Dhuhr:
+    athan_audio_file: athan_alqahera.mp3
+    athan_enabled: true
+    athan_offset: 0
+    athan_timing: before
+    athan_volume: 0.5
+    audio_file: null
+    enabled: true
+    enabled_devices:
+    - 19f9e88c-3e04-9eae-1c42-9aad399f1b60
+    - efbfb06a-92c0-2182-794d-c726743712e1
+    - 35d86530-3bc5-b8ad-76f9-bacfe97e619e
+    reminder_audio_file: null
+    reminder_enabled: false
+    reminder_offset: 0
+    reminder_timing: before
+    reminder_volume: 0.3
+    volume: null
+  Fajr:
+    athan_audio_file: athan_alaqsa.mp3
+    athan_enabled: true
+    athan_offset: 45
+    athan_timing: after
+    athan_volume: 0
+    audio_file: null
+    enabled: true
+    enabled_devices:
+    - efbfb06a-92c0-2182-794d-c726743712e1
+    reminder_audio_file: beep.mp3
+    reminder_enabled: true
+    reminder_offset: 90
+    reminder_timing: after
+    reminder_volume: 0.4
+    volume: null
+  Isha:
+    athan_audio_file: athan_alqahera.mp3
+    athan_enabled: true
+    athan_offset: 0
+    athan_timing: before
+    athan_volume: 0.5
+    audio_file: null
+    enabled: true
+    enabled_devices:
+    - 19f9e88c-3e04-9eae-1c42-9aad399f1b60
+    - efbfb06a-92c0-2182-794d-c726743712e1
+    - 35d86530-3bc5-b8ad-76f9-bacfe97e619e
+    reminder_audio_file: null
+    reminder_enabled: true
+    reminder_offset: 15
+    reminder_timing: before
+    reminder_volume: 0.4
+    volume: null
+  Maghrib:
+    athan_audio_file: athan_alaqsa.mp3
+    athan_enabled: true
+    athan_offset: 0
+    athan_timing: before
+    athan_volume: 0.5
+    audio_file: null
+    enabled: true
+    enabled_devices:
+    - 19f9e88c-3e04-9eae-1c42-9aad399f1b60
+    - efbfb06a-92c0-2182-794d-c726743712e1
+    - 35d86530-3bc5-b8ad-76f9-bacfe97e619e
+    reminder_audio_file: beep.mp3
+    reminder_enabled: true
+    reminder_offset: 20
+    reminder_timing: before
+    reminder_volume: 0.3
+    volume: null
+  Sunrise:
+    athan_audio_file: null
+    athan_enabled: false
+    athan_offset: 0
+    athan_timing: before
+    athan_volume: 0
+    audio_file: null
+    enabled: false
+    enabled_devices: []
+    reminder_audio_file: beep.mp3
+    reminder_enabled: true
+    reminder_offset: 10
+    reminder_timing: before
+    reminder_volume: 0.4
+    volume: null
+system:
+  log_level: INFO
+  web_port: 8000

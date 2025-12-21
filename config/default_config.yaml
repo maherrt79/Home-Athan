@@ -1,0 +1,59 @@
+location:
+  latitude: 51.5074
+  longitude: -0.1278
+  timezone: "Europe/London"
+  calculation_method: "ISNA"  # Options: MWL, ISNA, EGYPT, MAKKAH, KARACHI, TEHRAN, JAFARI
+  asr_method: "STANDARD"      # Options: STANDARD (Shafi), HANAFI
+  hijri_offset: 0             # Days to adjust Hijri date
+
+
+audio:
+  default_file: "athan_makkah.mp3"
+  volume_default: 0.5
+  fade_in: true
+  reminder_type: "beep" # Options: beep, custom (kept for backwards compat if needed, but UI uses file directly)
+  reminder_audio_file: "beep.mp3"
+  reminder_lang: "en" 
+
+prayers:
+  Fajr:
+    enabled: true
+    audio_file: null # use default
+    volume: null # use default
+    reminder_offset: 0
+  Sunrise:
+    enabled: false
+    audio_file: null
+    volume: null
+    reminder_offset: 10
+  Dhuhr:
+    enabled: true
+    audio_file: null
+    volume: null
+    reminder_offset: 0
+  Asr:
+    enabled: true
+    audio_file: null
+    volume: null
+    reminder_offset: 0
+  Maghrib:
+    enabled: true
+    audio_file: null
+    volume: null
+    reminder_offset: 0
+  Isha:
+    enabled: true
+    audio_file: null
+    volume: null
+    reminder_offset: 0
+
+devices:
+  cast_enabled: true
+  echo_enabled: false
+  # explicit list of enabled device UUIDs (empty means all)
+  # enabled_devices: 
+  #   - "uuid-1"
+
+system:
+  log_level: "INFO"
+  web_port: 8000

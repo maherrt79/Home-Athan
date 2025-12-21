@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Athan Automation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css?v=5">
+</head>
+
+<body>
+    <div class="app-container">
+        <div id="toast-container"></div>
+        <header>
+            <div class="logo">Home Athan</div>
+            <nav>
+                <button id="settings-trigger" class="icon-btn" aria-label="Settings">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <path
+                            d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.58 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" />
+                    </svg>
+                </button>
+            </nav>
+        </header>
+
+        <!-- DASHBOARD TAB (Default) -->
+        <main id="dashboard" class="view-content active">
+            <section class="hero">
+                <div class="next-prayer-label">Next Prayer</div>
+                <h1 id="next-prayer-name">--</h1>
+                <div id="countdown" class="countdown">--:--:--</div>
+                <div id="next-prayer-time" class="time-sub">at --:--</div>
+                <div id="hijri-date" class="hijri-sub">--</div>
+            </section>
+
+            <section class="prayer-list" id="prayer-times-list">
+                <!-- Populated by JS -->
+            </section>
+
+            <!-- Astronomy Panel -->
+            <section class="astronomy-panel" id="astronomy-data">
+                <!-- Moon Card -->
+                <div class="astro-card moon-card">
+                    <div class="moon-visual">
+                        <!-- Realistic Moon Image -->
+                        <img id="moon-image" src="/static/img/moon/0.png" alt="Moon Phase" class="moon-image">
+                    </div>
+                    <div class="astro-label" id="moon-phase">--</div>
+                    <div class="astro-value" id="moon-illum">0%</div>
+                </div>
+
+                <!-- Sun Card -->
+                <div class="astro-card sun-card">
+                    <div class="sun-compass">
+                        <svg class="compass-dial" viewBox="0 0 120 120">
+                            <!-- Compass ring -->
+                            <circle class="compass-ring" cx="60" cy="60" r="50" />
+                            <!-- Cardinal markers -->
+                            <text x="60" y="18" class="cardinal">N</text>
+                            <text x="102" y="64" class="cardinal">E</text>
+                            <text x="60" y="110" class="cardinal">S</text>
+                            <text x="18" y="64" class="cardinal">W</text>
+                            <!-- Tick marks -->
+                            <line x1="60" y1="12" x2="60" y2="18" class="tick major" />
+                            <line x1="108" y1="60" x2="102" y2="60" class="tick major" />
+                            <line x1="60" y1="102" x2="60" y2="108" class="tick major" />
+                            <line x1="12" y1="60" x2="18" y2="60" class="tick major" />
+                            <!-- Sun pointer (rotated by JS) -->
+                            <g id="sun-pointer" class="sun-pointer">
+                                <circle cx="60" cy="25" r="8" class="sun-icon" />
+                                <line x1="60" y1="60" x2="60" y2="33" class="pointer-line" />
+                            </g>
+                            <!-- Center dot -->
+                            <circle cx="60" cy="60" r="4" class="compass-center" />
+                        </svg>
+                        <!-- Altitude arc -->
+                        <div class="altitude-display">
+                            <span class="alt-label">Alt</span>
+                            <span class="alt-value" id="sun-alt">--°</span>
+                        </div>
+                    </div>
+                    <div class="astro-label">Sun Position</div>
+                    <div class="astro-value"><span id="sun-az">--</span>°</div>
+                </div>
+            </section>
+
+            <div class="last-update-container">
+                Last updated: <span id="last-updated">Never</span>
+            </div>
+        </main>
+
+        <!-- SETTINGS VIEW (Contains Calculation and Schedule) -->
+        <main id="settings" class="view-content">
+            <div class="settings-header-nav">
+                <button id="back-to-dashboard" class="back-btn">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5" />
+                        <path d="M12 19l-7-7 7-7" />
+                    </svg>
+                    Back
+                </button>
+                <div class="sub-nav">
+                    <button class="sub-nav-btn active" data-subtab="calculation">Calculation</button>
+                    <button class="sub-nav-btn" data-subtab="schedule">Schedule</button>
+                </div>
+            </div>
+
+            <!-- SUB-TAB: CALCULATION -->
+            <div id="sub-calculation" class="sub-content active">
+                <div class="calculation-grid">
+                    <!-- Column 1: Calculation -->
+                    <section class="calc-column">
+                        <h2 class="section-title">Prayer Calculation</h2>
+                        <div class="form-group">
+                            <label>Calculation Method</label>
+                            <select id="calc-method">
+                                <option value="MWL">Muslim World League (MWL)</option>
+                                <option value="ISNA">Islamic Society of North America (ISNA)</option>
+                                <option value="EGYPT">Egyptian General Authority of Survey</option>
+                                <option value="MAKKAH">Umm al-Qura University (Makkah)</option>
+                                <option value="KARACHI">University of Islamic Sciences (Karachi)</option>
+                                <option value="TEHRAN">Institute of Geophysics, Univ. of Tehran</option>
+                                <option value="JAFARI">Shia Ithna Ashari (Jafari)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Asr Method</label>
+                            <select id="asr-method">
+                                <option value="STANDARD">Standard (Shafi, Maliki)</option>
+                                <option value="HANAFI">Hanafi</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Hijri Offset</label>
+                            <select id="hijri-offset">
+                                <option value="-2">-2 Days</option>
+                                <option value="-1">-1 Day</option>
+                                <option value="0">0 (Default)</option>
+                                <option value="+1">+1 Day</option>
+                                <option value="+2">+2 Days</option>
+                            </select>
+                        </div>
+                    </section>
+
+                    <!-- Column 2: Location -->
+                    <section class="calc-column">
+                        <h2 class="section-title">Location</h2>
+                        <div class="form-group">
+                            <label>Current Location</label>
+                            <select id="city-select">
+                                <option value="custom">Custom Location</option>
+                                <!-- Populated by JS -->
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>Latitude</label>
+                                    <input type="number" step="any" id="lat">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label>Longitude</label>
+                                    <input type="number" step="any" id="lon">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Time Zone</label>
+                            <select id="timezone">
+                                <option value="Europe/London">Europe/London</option>
+                                <option value="Europe/Paris">Europe/Paris</option>
+                                <option value="Asia/Riyadh">Asia/Riyadh</option>
+                                <option value="Asia/Dubai">Asia/Dubai</option>
+                                <option value="America/New_York">America/New_York</option>
+                                <option value="UTC">UTC</option>
+                            </select>
+                        </div>
+                    </section>
+                </div>
+                <button id="save-calc-btn" class="save-btn mt-4">Save Calculation Settings</button>
+            </div>
+
+            <!-- SUB-TAB: SCHEDULE -->
+            <div id="sub-schedule" class="sub-content">
+                <section class="settings-form">
+                    <!-- Removed title here as requested previously and context is clear via tabs -->
+                    <p class="section-desc">Configure audio, reminders, and target speakers for each prayer.</p>
+
+                    <div class="form-group">
+                        <div class="checkbox-group" id="prayer-selection">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <button id="save-schedule-btn" class="save-btn">Save Schedule Settings</button>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/script.js?v=8"></script>
+</body>
+
+</html>

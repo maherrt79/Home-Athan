@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Project
+debug_cast.py
+update.tar.gz
+.DS_Store
+.git/
+.gitignore
+.gemini/
+.agent/
+
+# Documentation
+README.md
+deployment_guide.md
+technical_features.md
+
+# Audio (handled by volumes in docker-compose)
+audio/
+web/static/audio/
