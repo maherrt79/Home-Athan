@@ -10,7 +10,7 @@ A robust, local-first Athan (Adhan) automation system designed for Raspberry Pi.
 
 ## ✨ Key Features
 
--   **🎯 Precision Calculation**: Powered by `adhanpy`, supporting multiple calculation methods (ISNA, MWL, Makkah, etc.) with custom offsets.
+-   **🎯 Precision Calculation**: Powered by `islamic-times`, supporting multiple calculation methods (ISNA, MWL, Makkah, etc.) with custom offsets.
 -   **📡 Multi-Device Orchestration**: Auto-discovery and synchronized playback on Google Cast devices and Echo devices (via webhooks).
 -   **🎨 Modern Dashboard**: A sleek, dark-mode web interface for real-time monitoring, countdowns, and instant configuration.
 -   **🔔 Smart Reminders**: Independently configurable reminders before or after each prayer.
@@ -39,7 +39,7 @@ graph TD
 ## 🛠 Tech Stack
 
 -   **Backend**: Python 3.9+, FastAPI, APScheduler
--   **Audio logic**: AdhanPy (Calculation), PyChromecast (Casting)
+-   **Audio logic**: islamic-times (Calculation), PyChromecast (Casting)
 -   **Frontend**: Vanilla JS, Modern CSS (Glassmorphism), WebSocket updates
 -   **Deployment**: Systemd, Docker, Bash
 

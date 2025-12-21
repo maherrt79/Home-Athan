@@ -30,7 +30,7 @@ graph LR
     - Recalculate prayer times daily at 12:01 AM.
     - Schedule precise playback jobs for each prayer (and its optional reminders).
     - Manage active jobs and handle "Stop Audio" signals.
-- **`core/calculator.py`**: Interfaces with the `adhanpy` library. Converts geographical coordinates and calculation methods into precise `datetime` objects.
+- **`core/calculator.py`**: Interfaces with the `islamic-times` library. Converts geographical coordinates and calculation methods into precise `datetime` objects.
 - **`core/audio_manager.py`**: Handles the resolution of audio file paths, fallbacks (e.g., if a specific Athan file is missing, it reverts to the default), and directory integrity.
 - **`integrations/cast_manager.py`**: Manages communication with smart speakers.
     - **Google Cast**: Uses `pychromecast` with MDNS for local discovery. It employs a resilient connection strategy, caching device objects to minimize latency.
@@ -40,7 +40,7 @@ graph LR
 
 ## 2. Prayer Calculation Engine
 
-The system ensures astronomical accuracy by utilizing the `adhanpy` library.
+The system ensures astronomical accuracy by utilizing the `islamic-times` library.
 
 ### Configuration Parameters:
 - **Methods**: Supports standard methods like ISNA, MWL, Makkah, Karachi, Egypt, etc.
