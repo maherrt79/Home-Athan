@@ -45,12 +45,33 @@ graph TD
 
 ---
 
+## 🍓 Supported Hardware
+
+| Device | Architecture | Status |
+|--------|-------------|--------|
+| Raspberry Pi 1 | ARMv6 | ✅ Supported (builds from source) |
+| Raspberry Pi Zero/Zero W | ARMv6 | ✅ Supported (builds from source) |
+| Raspberry Pi 3 | ARMv7 | ✅ Recommended |
+| Raspberry Pi 4 | ARMv8 | ✅ Recommended |
+| Raspberry Pi 5 | ARMv8 | ✅ Recommended |
+
+> **Note**: The install script automatically detects your Pi's architecture and optimizes the installation:
+> - **Pi 3/4/5**: Uses prebuilt wheels from piwheels (fast installation)
+> - **Pi 1/Zero**: Installs GDAL dependencies and builds packages from source (slower, but fully compatible)
+
 ## ⚡ Quick Start
 
-### 1. Installation
-Connect to your Raspberry Pi and run:
+### Option A: Remote Deploy (from your Mac/PC)
 ```bash
-git clone https://github.com/maher/Home-Athan.git
+git clone https://github.com/maherrt79/Home-Athan.git
+cd Home-Athan
+./deploy.sh <PI_USER> <PI_IP> <PI_PASSWORD>
+# Example: ./deploy.sh pi 192.168.1.100 mypassword
+```
+
+### Option B: Direct Install (on the Pi)
+```bash
+git clone https://github.com/maherrt79/Home-Athan.git
 cd Home-Athan
 chmod +x scripts/install.sh
 ./scripts/install.sh
@@ -66,8 +87,8 @@ chmod +x scripts/install.sh
 
 ## 📑 Documentation
 
--   📘 [**Deployment Guide**](file:///Users/maher/Desktop/Home-Athan/deployment_guide.md): Step-by-step guide for local and Docker deployment.
--   🏗 [**Technical Features**](file:///Users/maher/Desktop/Home-Athan/technical_features.md): Deep dive into the architecture and system logic.
+-   📘 [**Deployment Guide**](deployment_guide.md): Step-by-step guide for local and Docker deployment.
+-   🏗 [**Technical Features**](technical_features.md): Deep dive into the architecture and system logic.
 
 ---
 
