@@ -2,9 +2,25 @@
 
 echo "Installing Home Athan Automation..."
 
+# Detect architecture
+ARCH=$(uname -m)
+echo "Detected architecture: $ARCH"
+
 # 1. Update system
 sudo apt-get update
-sudo apt-get install -y python3-venv python3-pip libffi-dev libopenblas-dev
+
+# Base packages needed on all architectures
+BASE_PACKAGES="python3-venv python3-pip libffi-dev libopenblas-dev"
+
+# ARMv6 (Pi 1, Pi Zero) needs GDAL dev packages to build pyogrio from source
+# Newer Pis (ARMv7/ARMv8) have prebuilt wheels on piwheels
+if [ "$ARCH" = "armv6l" ]; then
+    echo "🔧 ARMv6 detected (Pi 1/Zero) - installing GDAL build dependencies..."
+    sudo apt-get install -y $BASE_PACKAGES gdal-bin libgdal-dev
+else
+    echo "✅ Modern architecture detected - using prebuilt wheels..."
+    sudo apt-get install -y $BASE_PACKAGES
+fi
 
 # 2. Create Virtual Env
 if [ ! -d "venv" ]; then
@@ -21,7 +37,15 @@ mkdir -p pip_tmp
 export TMPDIR=$(pwd)/pip_tmp
 echo "Using disk-based temp dir: $TMPDIR"
 
+# Install main requirements
 ./venv/bin/pip install -r requirements.txt
+
+# ARMv6 needs an older pyproj compatible with PROJ 9.1.1
+# Newer Pis can use the latest pyproj (pulled as a dependency)
+if [ "$ARCH" = "armv6l" ]; then
+    echo "🔧 Installing ARMv6-compatible pyproj version..."
+    ./venv/bin/pip install "pyproj>=3.5.0,<3.7.0"
+fi
 
 # Cleanup temp dir
 rm -rf pip_tmp
