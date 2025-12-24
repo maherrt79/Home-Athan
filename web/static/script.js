@@ -1,4 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/static/service-worker.js')
+            .then((registration) => {
+                console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch((error) => {
+                console.warn('Service Worker registration failed:', error);
+            });
+    }
+
     // Tab Navigation
     // Navigation Logic
     const settingsTrigger = document.getElementById('settings-trigger');

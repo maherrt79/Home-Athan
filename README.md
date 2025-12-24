@@ -92,6 +92,14 @@ chmod +x scripts/install.sh
 
 ---
 
+## 🔮 Future Features
+
+- [ ] **HTTPS Support**: Optional self-signed certificate for secure local connections
+- [ ] **Offline PWA Caching**: Enhanced service worker for full offline functionality
+- [ ] **Multiple Location Profiles**: Support for different prayer locations
+
+---
+
 ## 🤝 Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
 
