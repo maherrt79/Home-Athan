@@ -188,19 +188,21 @@ nav {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* --- Dashboard Hero --- */
-.hero {
-    text-align: center;
-    margin-bottom: 25px;
-    padding: 40px 20px;
-    background: linear-gradient(145deg, rgba(31, 40, 51, 0.8), rgba(11, 12, 16, 0.9));
-    border-radius: 24px;
-    border: var(--card-border);
+/* --- Dashboard Hero Card --- */
+
+/* Unified Hero Card (Circular Design) */
+#main-hero-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+    margin-bottom: 30px;
     position: relative;
     overflow: hidden;
+    min-height: auto;
 }
 
-.hero::before {
+#main-hero-card::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -208,64 +210,339 @@ nav {
     width: 200%;
     height: 200%;
     background: radial-gradient(circle, var(--accent-glow) 0%, transparent 60%);
-    opacity: 0.15;
+    opacity: 0.12;
     animation: pulse 8s infinite alternate;
     pointer-events: none;
 }
 
-.next-prayer-label {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    color: var(--text-secondary);
-    margin-bottom: 5px;
-}
-
-#next-prayer-name {
-    font-family: var(--font-heading);
-    font-size: 3.2rem;
-    margin-bottom: 5px;
-    background: linear-gradient(to bottom, #fff, #c5c6c7);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
-}
-
-.countdown {
-    font-family: 'Courier New', monospace;
-    font-size: 5rem;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: 5px;
-    text-shadow: 0 0 30px var(--accent-glow);
-    margin: 10px 0;
-}
-
-.time-sub,
-.hijri-sub {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    opacity: 0.8;
-}
-
-/* --- Prayer List --- */
-.prayer-list {
+/* 1. Top Area: Current Time */
+/* 1. Top Area: Current Time */
+.hero-top-area {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 30px;
+    align-items: center;
+    margin-bottom: 20px;
+    z-index: 2;
+    width: 100%;
 }
 
-.prayer-item {
-    background: transparent;
-    padding: 16px 20px;
-    border-radius: 12px;
+.time-big {
+    font-family: 'Courier New', monospace;
+    font-size: 6rem;
+    /* Huge/Prominent */
+    font-weight: 700;
+    color: var(--accent);
+    text-shadow: 0 0 30px var(--accent-glow);
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+/* --- Date Row (3-Column Layout) --- */
+.date-row-3col {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid transparent;
+    width: 100%;
+    max-width: 500px;
+    /* Constrain width for aesthetics */
+    margin-top: 10px;
+    padding: 0 15px;
+}
+
+.date-col {
+    flex: 1;
+    /* Equal width columns */
+}
+
+/* Left: Gregorian */
+.date-col.left {
+    text-align: left;
+}
+
+/* Center: Day Name */
+.date-col.center {
+    text-align: center;
+}
+
+/* Right: Hijri */
+.date-col.right {
+    text-align: right;
+}
+
+/* Typography for Dates */
+.date-line-main {
+    display: block;
+    font-size: 1.1rem;
+    color: #fff;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.date-line-sub {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+/* Highlighted Day Name */
+.day-highlight {
+    font-family: var(--font-heading);
+    /* Use heading font */
+    font-size: 1.5rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+/* 2. Circular Timer Wrapper */
+.circular-timer-wrapper {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* SVG Ring */
+.progress-ring {
+    transform: rotate(-90deg);
+    /* Start from top */
+    transform-origin: 50% 50%;
+}
+
+.progress-ring__circle-bg {
+    stroke: rgba(255, 255, 255, 0.05);
+}
+
+.progress-ring__circle {
+    stroke: var(--accent);
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear;
+    filter: drop-shadow(0 0 8px var(--accent-glow));
+    /* dasharray set via JS */
+}
+
+/* Inner Content (Absolute Center) */
+.timer-inner-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    /* Keep content inside ring */
+    z-index: 10;
+}
+
+#hero-moon-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+}
+
+#hero-moon-info {
+    position: relative;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 20;
+    font-weight: 500;
+    text-align: center;
+}
+
+.next-prayer-header {
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.prayer-icon-large {
+    width: 32px;
+    height: 32px;
+    color: var(--accent);
+    margin-bottom: 5px;
+    filter: drop-shadow(0 0 5px var(--accent-glow));
+}
+
+#next-prayer-name {
+    font-size: 2.2rem;
+    font-family: var(--font-heading);
+    color: #fff;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.countdown-circular {
+    font-family: 'Courier New', monospace;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 5px 0;
+}
+
+.next-prayer-meta {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.time-sub {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.hijri-sub {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 500px) {
+    .time-big {
+        font-size: 4.5rem;
+    }
+
+    .circular-timer-wrapper {
+        width: 280px;
+        height: 280px;
+    }
+
+    .progress-ring {
+        width: 280px;
+        height: 280px;
+    }
+
+    .progress-ring circle {
+        r: 130;
+        cx: 140;
+        cy: 140;
+    }
+
+    /* Adjust radius/center */
+    #next-prayer-name {
+        font-size: 1.8rem;
+    }
+
+    .countdown-circular {
+        font-size: 2.8rem;
+    }
+
+    .timer-inner-content {
+        padding: 30px;
+    }
+}
+
+/* Absolute Positioning for Hijri Date */
+.abs-corner {
+    position: absolute;
+    bottom: 20px;
+    right: 25px;
+}
+
+/* --- Prayer List --- */
+/* --- Prayer List --- */
+.prayer-section-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+    margin-left: 5px;
+    opacity: 0.7;
+}
+
+/* Container: Default (Mobile) = Vertical Stack, No Scroll */
+.prayer-scroll-container {
+    width: 100%;
+    margin-bottom: 30px;
+    /* No overflow-x auto for mobile vertical layout */
+}
+
+.prayer-list-row {
+    display: flex;
+    flex-direction: column;
+    /* Mobile: Stack vertically */
+    gap: 12px;
+    width: 100%;
+}
+
+/* Item: Default (Mobile) = Horizontal Row (Icon | Name | Time) */
+.prayer-item {
+    display: flex;
+    flex-direction: row;
+    /* Content in one line */
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
     transition: all 0.3s ease;
+}
+
+.prayer-item.active {
+    background: rgba(102, 252, 241, 0.08);
+    /* Highlight next prayer */
+    border-color: rgba(102, 252, 241, 0.3);
+    box-shadow: 0 0 25px rgba(102, 252, 241, 0.1);
+}
+
+.prayer-item .prayer-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--accent);
+    margin-right: 15px;
+}
+
+.prayer-item .prayer-name {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+    color: #fff;
+    flex-grow: 1;
+    /* Push time to right */
+    text-align: left;
+    /* Align name left */
+    margin: 0;
+}
+
+.prayer-item .prayer-time {
+    font-size: 1.1rem;
+    color: #fff;
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+    margin: 0;
 }
 
 /* Past prayers dimmed */
@@ -337,7 +614,6 @@ nav {
 .section-title {
     font-size: 1.1rem;
     font-family: var(--font-heading);
-    color: var(--text-primary);
     color: var(--text-primary);
     padding-left: 0;
     margin-bottom: 15px;
@@ -1036,9 +1312,134 @@ input[type="checkbox"]:not(#switch) {
     transform: translateY(-1px);
 }
 
+/* --- Astronomy Redesign --- */
+.astronomy-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 0;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.astro-card {
+    display: flex;
+    flex-direction: row;
+    /* Side-by-side content */
+    align-items: center;
+    gap: 20px;
+    justify-content: flex-start;
+}
+
+.moon-visual,
+.sun-compass {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+}
+
+.astro-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.astro-label {
+    text-align: left;
+    margin-top: 0;
+    font-size: 0.75rem;
+}
+
+.astro-value-main {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.astro-sub {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
 /* ============================================
-   ASTRONOMY PANEL STYLES
+   RESPONSIVE LAYOUTS
    ============================================ */
+
+/* Desktop / Wide Screen (> 1000px) */
+@media (min-width: 1000px) {
+    .prayer-list-row {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 15px;
+    }
+
+    /* Desktop: Grid Cards (Icon top, Name, Time bottom) */
+    .prayer-item {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        padding: 25px 15px;
+        min-height: 140px;
+    }
+
+    .prayer-item .prayer-name {
+        text-align: center;
+        margin: 10px 0;
+    }
+
+    .prayer-item .prayer-icon {
+        margin-right: 0;
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* Mobile Adjustments (< 1000px) */
+@media (max-width: 999px) {
+
+    /* Reduce sizes slightly for mobile */
+    .time-big {
+        font-size: 4rem;
+    }
+
+    /* Date Row Mobile Adjustments */
+    .day-highlight {
+        font-size: 1.2rem;
+        /* Smaller from 1.5rem */
+        letter-spacing: 1px;
+    }
+
+    .date-line-main {
+        font-size: 0.95rem;
+        /* Smaller from 1.1rem */
+    }
+
+    .date-line-sub {
+        font-size: 0.8rem;
+        /* Smaller from 0.95rem */
+    }
+
+    .countdown {
+        font-size: 3.5rem;
+    }
+
+    #next-prayer-name {
+        font-size: 2.5rem;
+    }
+
+    .prayer-item {
+        min-width: 140px;
+    }
+
+    /* Stack astronomy on very small screens */
+    @media (max-width: 600px) {
+        .astronomy-panel {
+            grid-template-columns: 1fr;
+        }
+    }
+}
 
 .astronomy-panel {
     display: none;

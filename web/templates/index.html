@@ -49,62 +49,57 @@
 
         <!-- DASHBOARD TAB (Default) -->
         <main id="dashboard" class="view-content active">
-            <section class="hero">
-                <div class="next-prayer-label">Next Prayer</div>
-                <h1 id="next-prayer-name">--</h1>
-                <div id="countdown" class="countdown">--:--:--</div>
-                <div id="next-prayer-time" class="time-sub">at --:--</div>
-                <div id="hijri-date" class="hijri-sub">--</div>
-            </section>
-
-            <section class="prayer-list" id="prayer-times-list">
-                <!-- Populated by JS -->
-            </section>
-
-            <!-- Astronomy Panel -->
-            <section class="astronomy-panel" id="astronomy-data">
-                <!-- Moon Card -->
-                <div class="astro-card moon-card">
-                    <div class="moon-visual">
-                        <!-- Realistic Moon Image -->
-                        <img id="moon-image" src="/static/img/moon/0.png" alt="Moon Phase" class="moon-image">
-                    </div>
-                    <div class="astro-label" id="moon-phase">--</div>
-                    <div class="astro-value" id="moon-illum">0%</div>
-                </div>
-
-                <!-- Sun Card -->
-                <div class="astro-card sun-card">
-                    <div class="sun-compass">
-                        <svg class="compass-dial" viewBox="0 0 120 120">
-                            <!-- Compass ring -->
-                            <circle class="compass-ring" cx="60" cy="60" r="50" />
-                            <!-- Cardinal markers -->
-                            <text x="60" y="18" class="cardinal">N</text>
-                            <text x="102" y="64" class="cardinal">E</text>
-                            <text x="60" y="110" class="cardinal">S</text>
-                            <text x="18" y="64" class="cardinal">W</text>
-                            <!-- Tick marks -->
-                            <line x1="60" y1="12" x2="60" y2="18" class="tick major" />
-                            <line x1="108" y1="60" x2="102" y2="60" class="tick major" />
-                            <line x1="60" y1="102" x2="60" y2="108" class="tick major" />
-                            <line x1="12" y1="60" x2="18" y2="60" class="tick major" />
-                            <!-- Sun pointer (rotated by JS) -->
-                            <g id="sun-pointer" class="sun-pointer">
-                                <circle cx="60" cy="25" r="8" class="sun-icon" />
-                                <line x1="60" y1="60" x2="60" y2="33" class="pointer-line" />
-                            </g>
-                            <!-- Center dot -->
-                            <circle cx="60" cy="60" r="4" class="compass-center" />
-                        </svg>
-                        <!-- Altitude arc -->
-                        <div class="altitude-display">
-                            <span class="alt-label">Alt</span>
-                            <span class="alt-value" id="sun-alt">--°</span>
+            <!-- Hero Card Only (No Grid Needed) -->
+            <section id="main-hero-card" class="glass-card hero-card">
+                <!-- Top Area: Time & Date -->
+                <div class="hero-top-area">
+                    <div id="current-time-big" class="time-big">--:--:--</div>
+                    <div class="date-row-3col">
+                        <div class="date-col left">
+                            <span id="greg-day-month" class="date-line-main">--</span>
+                            <span id="greg-year" class="date-line-sub">--</span>
+                        </div>
+                        <div class="date-col center">
+                            <span id="day-name" class="day-highlight">--</span>
+                        </div>
+                        <div class="date-col right">
+                            <span id="hijri-day-month" class="date-line-main">--</span>
+                            <span id="hijri-year" class="date-line-sub">--</span>
                         </div>
                     </div>
-                    <div class="astro-label">Sun Position</div>
-                    <div class="astro-value"><span id="sun-az">--</span>°</div>
+                </div>
+
+                <!-- Circular Timer -->
+                <div class="circular-timer-wrapper">
+                    <svg class="progress-ring" width="320" height="320">
+                        <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8"
+                            fill="transparent" r="150" cx="160" cy="160" />
+                        <circle class="progress-ring__circle" stroke="var(--accent)" stroke-width="8" fill="transparent"
+                            r="150" cx="160" cy="160" />
+                    </svg>
+
+                    <div class="timer-inner-content">
+                        <img id="hero-moon-image" src="" alt="Moon Phase" />
+                        <div class="next-prayer-header">
+                            <div id="next-prayer-icon" class="prayer-icon-large">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.95 2.95 4.95-4.95" />
+                                </svg>
+                            </div>
+                            <h2 id="next-prayer-name">--</h2>
+                        </div>
+                        <div id="countdown" class="countdown-circular">--:--:--</div>
+                        <div class="next-time-label" id="next-prayer-time">--:--</div>
+                    </div>
+                </div>
+                <!-- Moon Info (Outside Circle) -->
+                <div id="hero-moon-info"></div>
+            </section>
+
+            <!-- Prayer Schedule (Bottom Row) -->
+            <section class="prayer-scroll-container">
+                <div id="prayer-times-list" class="prayer-list-row">
+                    <!-- Populated by JS -->
                 </div>
             </section>
 
@@ -126,6 +121,7 @@
                 <div class="sub-nav">
                     <button class="sub-nav-btn active" data-subtab="calculation">Calculation</button>
                     <button class="sub-nav-btn" data-subtab="schedule">Schedule</button>
+                    <button class="sub-nav-btn" data-subtab="astronomy">Astronomy</button>
                 </div>
             </div>
 
@@ -241,6 +237,44 @@
                     </div>
 
                     <button id="save-schedule-btn" class="save-btn">Save Schedule Settings</button>
+                </section>
+            </div>
+
+            <!-- SUB-TAB: ASTRONOMY -->
+            <div id="sub-astronomy" class="sub-content">
+                <section class="astronomy-panel visible" id="astronomy-data">
+                    <!-- Moon Card -->
+                    <div class="astro-card moon-card">
+                        <div class="moon-visual">
+                            <img id="moon-image" src="/static/img/moon/0.png" alt="Moon Phase" class="moon-image">
+                        </div>
+                        <div class="astro-info">
+                            <div class="astro-label">MOON PHASE</div>
+                            <div class="astro-value-main" id="moon-phase">--</div>
+                            <div class="astro-sub" id="moon-illum">0%</div>
+                        </div>
+                    </div>
+                    <!-- Sun Card -->
+                    <div class="astro-card sun-card">
+                        <div class="sun-compass">
+                            <svg viewBox="0 0 100 100" class="compass-svg">
+                                <circle cx="50" cy="50" r="45" stroke="rgba(255,255,255,0.1)" stroke-width="1"
+                                    fill="transparent" />
+                                <text x="50" y="15" text-anchor="middle" fill="#666" font-size="10">N</text>
+                                <text x="85" y="52" text-anchor="middle" fill="#666" font-size="10">E</text>
+                                <text x="50" y="90" text-anchor="middle" fill="#666" font-size="10">S</text>
+                                <text x="15" y="52" text-anchor="middle" fill="#666" font-size="10">W</text>
+                                <line id="sun-pointer" x1="50" y1="50" x2="50" y2="20" stroke="var(--accent-gold)"
+                                    stroke-width="2" stroke-linecap="round" />
+                                <circle cx="50" cy="50" r="3" fill="#fff" />
+                            </svg>
+                        </div>
+                        <div class="astro-info">
+                            <div class="astro-label">SUN POSITION</div>
+                            <div class="astro-value-main" id="sun-az">--°</div>
+                            <div class="astro-sub" id="sun-alt">--° Altitude</div>
+                        </div>
+                    </div>
                 </section>
             </div>
         </main>

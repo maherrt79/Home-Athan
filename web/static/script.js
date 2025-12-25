@@ -60,6 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(fetchStatus, 60000);
     // Refresh countdown every 1s
     setInterval(updateCountdown, 1000);
+    // Live Clock
+    setInterval(updateCurrentTime, 1000);
+    updateCurrentTime(); // Init call
+
 
     // Event Listeners
     document.getElementById('save-calc-btn').addEventListener('click', saveCalculationConfig);
@@ -67,6 +71,31 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('city-select').addEventListener('change', handleCityChange);
     document.getElementById('country-select').addEventListener('change', handleCountryChange);
 });
+
+function updateCurrentTime() {
+    const now = new Date();
+    // Time: HH:MM:SS
+    const timeStr = now.toLocaleTimeString([], { hour12: false });
+    const timeEl = document.getElementById('current-time-big');
+    if (timeEl) timeEl.textContent = timeStr;
+
+    // Split Date for 3-Column Layout
+    // 1. Day Name (Center)
+    const dayName = now.toLocaleDateString(undefined, { weekday: 'long' });
+    const dayNameEl = document.getElementById('day-name');
+    if (dayNameEl) dayNameEl.textContent = dayName;
+
+    // 2. Gregorian Date (Left) - DD Month / Year
+    const day = now.getDate();
+    const month = now.toLocaleDateString(undefined, { month: 'long' });
+    const year = now.getFullYear();
+
+    const gregDayMonthEl = document.getElementById('greg-day-month');
+    const gregYearEl = document.getElementById('greg-year');
+
+    if (gregDayMonthEl) gregDayMonthEl.textContent = `${day} ${month}`;
+    if (gregYearEl) gregYearEl.textContent = year;
+}
 
 let countriesData = {}; // Store fetched countries
 let cityData = []; // Store current cities for easy access
@@ -100,12 +129,134 @@ async function fetchStatus(forceRefresh = false) {
             document.getElementById('next-prayer-name').textContent = data.next_prayer.name;
             nextPrayerTime = new Date(data.next_prayer.time);
 
-            const timeStr = nextPrayerTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('next-prayer-time').textContent = `at ${timeStr}`;
+            // Calculate Previous Prayer Time for Progress Bar
+            if (data.times) {
+                const timesArr = Object.values(data.times).map(t => new Date(t)).sort((a, b) => a - b);
+                // Find next prayer index
+                // Note: nextPrayerTime might be a specific date object that matches one in the list (or roughly if seconds differ)
+                // Let's find the time in the list closest to nextPrayerTime but <= it? Or == it.
+                // Actually `data.times` usually contains today's prayers. 
+                // If next prayer is Tomorrow Fajr, it won't be in `data.times` (which is usually today's schedule).
 
-            // Hijri Date
+                // Fallback: If we can't find it, assume a default window (e.g. 2 hours? or just don't animate).
+                // Better approach: 
+                // Find the prayer in `timesArr` that is immediately BEFORE `now`? 
+                // Because `elapsed` = `now` - `prev`.
+                // So `prev` is the "Current Active Prayer Window Start". which is the last passed prayer.
+
+                const now = new Date();
+                let prevTime = null;
+
+                // Filter times that are in the past
+                const pastTimes = timesArr.filter(t => t < now);
+
+                if (pastTimes.length > 0) {
+                    prevTime = pastTimes[pastTimes.length - 1];
+                } else {
+                    // Early morning (Midnight to Fajr)
+                    // No past times today. Previous prayer was yesterday's last prayer (Isha).
+                    // Fallback: Use Today's Isha - 24 hours
+                    if (timesArr.length > 0) {
+                        const todaysIsha = timesArr[timesArr.length - 1]; // Assume last in list is Isha
+                        prevTime = new Date(todaysIsha.getTime() - (24 * 60 * 60 * 1000));
+                    }
+                }
+
+                previousPrayerTime = prevTime;
+
+                // If we really can't determine prev (e.g. midnight rollover), 
+                // Reset progress or set fully empty?
+                if (!previousPrayerTime && data.next_prayer.name === 'Fajr') {
+                    // Assume we are in post-midnight pre-fajr.
+                    // Let's just use a fixed start time of "Now" so it fills up? No that's wrong.
+                    // Let's leave it null, `updateCircularProgress` checks for null and returns.
+                }
+
+                // Handling the case where next prayer is in list (standard day)
+                // If we found a prevTime, great.
+                // Note: `nextPrayerTime` from API handles date rollover (tomorrow).
+            }
+
+            // NEW: Update Circular Design Elements
+            // 1. Next Prayer Icon
+            const prayerIcons = {
+                "Fajr": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18h5"/><path d="M2 18h5"/><path d="M12 18v3"/><path d="M12 14a4 4 0 1 0-8 0"/><path d="M12 10V6"/><path d="M8 8L6 6"/><path d="M16 8l2-2"/></svg>`,
+                "Sunrise": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>`,
+                "Dhuhr": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/></svg>`,
+                "Asr": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17h-1"/><path d="M5 17h-1"/><path d="M12 12a4 4 0 0 1 8 0"/><path d="M15 9l-1-1"/><path d="M20 9l1-1"/><path d="M17.5 5.5l-.5-.5"/><path d="M12 4v2"/></svg>`,
+                "Maghrib": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/><path d="M2 17h20"/><path d="M2 21h20"/></svg>`,
+                "Isha": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/><path d="M19 3v4"/><path d="M21 5h-4"/></svg>`
+            };
+
+            const nextIconContainer = document.getElementById('next-prayer-icon');
+            if (nextIconContainer && data.next_prayer) {
+                nextIconContainer.innerHTML = prayerIcons[data.next_prayer.name] || '';
+            }
+
+            const timeStr = nextPrayerTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('next-prayer-time').textContent = timeStr; // removed 'at' as it is in HTML now
+
+            // Update Hero Moon Image
+            const heroMoon = document.getElementById('hero-moon-image');
+            const heroMoonInfo = document.getElementById('hero-moon-info');
+
+            if (heroMoon && data.astronomy && data.astronomy.moon_image_index !== undefined) {
+                // Check visibility based on time (Between Maghrib and Fajr)
+                let showMoon = false;
+                if (data.times) {
+                    const now = new Date();
+                    const maghribTime = new Date(data.times["Maghrib"]);
+                    const fajrTime = new Date(data.times["Fajr"]);
+
+                    if (!isNaN(maghribTime) && !isNaN(fajrTime)) {
+                        if (now >= maghribTime || now < fajrTime) {
+                            showMoon = true;
+                        }
+                    } else {
+                        // Fallback if times parsing fails (safety)
+                        showMoon = true;
+                    }
+                }
+
+                if (showMoon) {
+                    heroMoon.src = `/static/img/moon/${data.astronomy.moon_image_index}.png`;
+                    heroMoon.style.display = 'block';
+
+                    // Update Info Text
+                    if (heroMoonInfo) {
+                        const phaseName = data.astronomy.nearest_phase ? data.astronomy.nearest_phase.name : '';
+                        const illum = data.astronomy.moon_illumination ? data.astronomy.moon_illumination : '';
+                        if (phaseName) {
+                            heroMoonInfo.textContent = `${phaseName} ${illum}%`;
+                            heroMoonInfo.style.display = 'block';
+                        }
+                    }
+                } else {
+                    heroMoon.style.display = 'none';
+                    if (heroMoonInfo) heroMoonInfo.style.display = 'none';
+                }
+            }
+
+            // Hijri Date Split (Right Column)
             if (data.hijri_date) {
-                document.getElementById('hijri-date').textContent = data.hijri_date;
+                // Expected format: "DD Monthname YYYY"
+                const hijriParts = data.hijri_date.trim().split(' ');
+
+                let hYear = '';
+                let hDayMonth = '';
+
+                if (hijriParts.length >= 3) {
+                    hYear = hijriParts[hijriParts.length - 1];
+                    hDayMonth = hijriParts.slice(0, hijriParts.length - 1).join(' ');
+                } else {
+                    hDayMonth = data.hijri_date; // Fallback
+                }
+
+                const hDayMonthEl = document.getElementById('hijri-day-month');
+                const hYearEl = document.getElementById('hijri-year');
+
+                if (hDayMonthEl) hDayMonthEl.textContent = hDayMonth;
+                if (hYearEl) hYearEl.textContent = hYear;
             }
         }
 
@@ -113,9 +264,9 @@ async function fetchStatus(forceRefresh = false) {
         const listContainer = document.getElementById('prayer-times-list');
         listContainer.innerHTML = '';
 
-        // Prayer icons for dashboard
-        // Prayer icons for dashboard (Standardized with Settings)
-        const prayerIcons = {
+        // Reuse icon map (simplified for list)
+        // Redefine locally or move globally if needed, for now duplicated for safety in this block substitution
+        const prayerIconsList = {
             "Fajr": `<svg viewBox="0 0 24 24" fill="none" stroke="#FDB813" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18h5"/><path d="M2 18h5"/><path d="M12 18v3"/><path d="M12 14a4 4 0 1 0-8 0"/><path d="M12 10V6"/><path d="M8 8L6 6"/><path d="M16 8l2-2"/></svg>`,
             "Sunrise": `<svg viewBox="0 0 24 24" fill="none" stroke="#FFA726" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>`,
             "Dhuhr": `<svg viewBox="0 0 24 24" fill="none" stroke="#FFD700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2"/><path d="M12 21v2"/><path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/><path d="M1 12h2"/><path d="M21 12h2"/><path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/></svg>`,
@@ -133,7 +284,7 @@ async function fetchStatus(forceRefresh = false) {
                 div.className = 'prayer-item';
                 if (data.next_prayer && name === data.next_prayer.name) div.classList.add('active');
 
-                const icon = prayerIcons[name] || '';
+                const icon = prayerIconsList[name] || '';
                 div.innerHTML = `
                     <span class="prayer-icon">${icon}</span>
                     <span class="prayer-name">${name}</span>
@@ -686,6 +837,54 @@ function updateCountdown() {
 
     document.getElementById('countdown').textContent =
         `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+    updateCircularProgress(); // Call progress update with countdown
+}
+
+// Global state for progress
+let previousPrayerTime = null;
+
+function updateCircularProgress() {
+    if (!nextPrayerTime || !previousPrayerTime) return;
+
+    const now = new Date();
+    const totalDuration = nextPrayerTime - previousPrayerTime;
+    const elapsed = now - previousPrayerTime;
+
+    // Calculate percentage (0 to 1)
+    let progress = elapsed / totalDuration;
+
+    // Clamp between 0 and 1
+    if (progress < 0) progress = 0;
+    if (progress > 1) progress = 1;
+
+    // SVG Circle Logic
+    const circle = document.querySelector('.progress-ring__circle');
+    if (circle) {
+        const radius = circle.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius;
+
+        // Set dasharray if not set
+        if (!circle.style.strokeDasharray) {
+            circle.style.strokeDasharray = `${circumference} ${circumference}`;
+        }
+
+        // Offset: Full circumference means empty, 0 means full.
+        // We want it to "empty" as time passes (or fill?)
+        // Let's make it "Fill" as we get closer? Or "Empty"?
+        // Usually countdowns "empty". 
+        // If empty: offset starts at 0 (full) and goes to circumference (empty).
+        const offset = circumference - (progress * circumference);
+        // Wait, if progress is 0 (start), offset = circumference? NO.
+        // If we want it to START FULL and DECREASE:
+        // offset = circumference * (1 - (1-progress))?? 
+        // Let's do: Start Full -> End Empty.
+        // Progress 0 (Start) -> Offset 0 (Full Line).
+        // Progress 1 (End) -> Offset Circumference (Empty Line).
+        const strokeOffset = circumference * progress;
+
+        circle.style.strokeDashoffset = strokeOffset;
+    }
 }
 
 // Helpers
