@@ -48,9 +48,16 @@ body {
     color: var(--text-primary);
     font-family: var(--font-body);
     min-height: 100vh;
+    /* PWA: Use 100dvh for dynamic viewport height (accounts for browser chrome) */
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
+    /* PWA: Safe area insets for notch/status bar - background extends edge-to-edge */
     padding: 20px;
+    padding-top: calc(20px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    padding-left: calc(20px + env(safe-area-inset-left, 0px));
+    padding-right: calc(20px + env(safe-area-inset-right, 0px));
     -webkit-font-smoothing: antialiased;
 }
 
