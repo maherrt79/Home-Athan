@@ -53,18 +53,18 @@ body {
     display: flex;
     justify-content: center;
     /* PWA: Safe area insets for notch/status bar - background extends edge-to-edge */
-    padding: 20px;
-    padding-top: calc(20px + env(safe-area-inset-top, 0px));
-    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
-    padding-left: calc(20px + env(safe-area-inset-left, 0px));
-    padding-right: calc(20px + env(safe-area-inset-right, 0px));
+    padding: 12px;
+    padding-top: calc(12px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    padding-left: calc(12px + env(safe-area-inset-left, 0px));
+    padding-right: calc(12px + env(safe-area-inset-right, 0px));
     -webkit-font-smoothing: antialiased;
 }
 
 .app-container {
     width: 100%;
     max-width: 1000px;
-    padding-bottom: 50px;
+    padding-bottom: 20px;
 }
 
 /* --- Header & Nav --- */
@@ -72,19 +72,19 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
-    padding: 15px 20px;
+    margin-bottom: 15px;
+    padding: 10px 15px;
     background: var(--card-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-radius: 16px;
+    border-radius: 12px;
     border: var(--card-border);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .logo {
     font-family: var(--font-heading);
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     color: var(--accent);
     text-shadow: 0 0 15px var(--accent-glow);
     font-weight: 700;
@@ -202,8 +202,8 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 30px 20px;
-    margin-bottom: 30px;
+    padding: 15px 15px;
+    margin-bottom: 15px;
     position: relative;
     overflow: hidden;
     min-height: auto;
@@ -228,20 +228,20 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     z-index: 2;
     width: 100%;
 }
 
 .time-big {
     font-family: 'Courier New', monospace;
-    font-size: 6rem;
-    /* Huge/Prominent */
+    font-size: 4rem;
+    /* Reduced for mobile fit */
     font-weight: 700;
     color: var(--accent);
     text-shadow: 0 0 30px var(--accent-glow);
     line-height: 1;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 
 /* --- Date Row (3-Column Layout) --- */
@@ -252,8 +252,8 @@ nav {
     width: 100%;
     max-width: 500px;
     /* Constrain width for aesthetics */
-    margin-top: 10px;
-    padding: 0 15px;
+    margin-top: 5px;
+    padding: 0 10px;
 }
 
 .date-col {
@@ -279,7 +279,7 @@ nav {
 /* Typography for Dates */
 .date-line-main {
     display: block;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     color: #fff;
     font-weight: 500;
     line-height: 1.2;
@@ -287,7 +287,7 @@ nav {
 
 .date-line-sub {
     display: block;
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     color: var(--text-secondary);
     font-weight: 400;
 }
@@ -296,18 +296,18 @@ nav {
 .day-highlight {
     font-family: var(--font-heading);
     /* Use heading font */
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: var(--accent);
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
 /* 2. Circular Timer Wrapper */
 .circular-timer-wrapper {
     position: relative;
-    width: 320px;
-    height: 320px;
+    width: 240px;
+    height: 240px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -315,6 +315,11 @@ nav {
 
 /* SVG Ring */
 .progress-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     transform: rotate(-90deg);
     /* Start from top */
     transform-origin: 50% 50%;
@@ -365,21 +370,8 @@ nav {
 }
 
 #hero-moon-info {
-    position: relative;
-    margin-top: 10px;
-    margin-bottom: 15px;
-    bottom: auto;
-    left: auto;
-    transform: none;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    opacity: 0.5;
-    pointer-events: none;
-    z-index: 20;
-    font-weight: 500;
-    text-align: center;
+    display: none;
+    /* Hidden on mobile for space optimization */
 }
 
 .next-prayer-header {
@@ -398,20 +390,20 @@ nav {
 }
 
 #next-prayer-name {
-    font-size: 2.2rem;
+    font-size: 1.6rem;
     font-family: var(--font-heading);
     color: #fff;
     margin: 0;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
 }
 
 .countdown-circular {
     font-family: 'Courier New', monospace;
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: #fff;
-    margin: 5px 0;
+    margin: 2px 0;
 }
 
 .next-prayer-meta {
@@ -435,36 +427,42 @@ nav {
 /* Responsive adjustments for smaller screens */
 @media (max-width: 500px) {
     .time-big {
-        font-size: 4.5rem;
-    }
-
-    .circular-timer-wrapper {
-        width: 280px;
-        height: 280px;
-    }
-
-    .progress-ring {
-        width: 280px;
-        height: 280px;
-    }
-
-    .progress-ring circle {
-        r: 130;
-        cx: 140;
-        cy: 140;
-    }
-
-    /* Adjust radius/center */
-    #next-prayer-name {
-        font-size: 1.8rem;
-    }
-
-    .countdown-circular {
         font-size: 2.8rem;
     }
 
+    .circular-timer-wrapper {
+        width: 200px;
+        height: 200px;
+    }
+
+    #next-prayer-name {
+        font-size: 1.3rem;
+    }
+
+    .countdown-circular {
+        font-size: 1.8rem;
+    }
+
     .timer-inner-content {
-        padding: 30px;
+        padding: 20px;
+    }
+
+    .prayer-icon-large {
+        width: 20px;
+        height: 20px;
+        margin-bottom: 2px;
+    }
+
+    .date-line-main {
+        font-size: 0.75rem;
+    }
+
+    .date-line-sub {
+        font-size: 0.7rem;
+    }
+
+    .day-highlight {
+        font-size: 1rem;
     }
 }
 
@@ -490,7 +488,7 @@ nav {
 /* Container: Default (Mobile) = Vertical Stack, No Scroll */
 .prayer-scroll-container {
     width: 100%;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     /* No overflow-x auto for mobile vertical layout */
 }
 
@@ -498,7 +496,7 @@ nav {
     display: flex;
     flex-direction: column;
     /* Mobile: Stack vertically */
-    gap: 12px;
+    gap: 6px;
     width: 100%;
 }
 
@@ -509,10 +507,10 @@ nav {
     /* Content in one line */
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
+    padding: 10px 15px;
     width: 100%;
     background: rgba(255, 255, 255, 0.03);
-    border-radius: 16px;
+    border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.05);
     transition: all 0.3s ease;
 }
@@ -599,10 +597,10 @@ nav {
 /* --- Status Panel (Last Update Only) --- */
 .last-update-container {
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-secondary);
     opacity: 0.4;
-    margin-top: 40px;
+    margin-top: 10px;
     font-family: var(--font-body);
     transition: opacity 0.3s;
 }
@@ -1373,10 +1371,115 @@ input[type="checkbox"]:not(#switch) {
    RESPONSIVE LAYOUTS
    ============================================ */
 
-/* Desktop / Wide Screen (> 1000px) */
-@media (min-width: 1000px) {
+/* Desktop / Wide Screen (≥ 768px - Laptops/MacBooks) */
+@media (min-width: 768px) {
+
+    /* Restore larger body padding for desktop */
+    body {
+        padding: 20px;
+        padding-top: calc(20px + env(safe-area-inset-top, 0px));
+        padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+        padding-left: calc(20px + env(safe-area-inset-left, 0px));
+        padding-right: calc(20px + env(safe-area-inset-right, 0px));
+    }
+
+    .app-container {
+        padding-bottom: 40px;
+    }
+
+    /* Larger header for desktop */
+    header {
+        margin-bottom: 25px;
+        padding: 15px 20px;
+        border-radius: 16px;
+    }
+
+    .logo {
+        font-size: 1.4rem;
+    }
+
+    /* Hero card larger padding */
+    #main-hero-card {
+        padding: 30px 25px;
+        margin-bottom: 25px;
+    }
+
+    .hero-top-area {
+        margin-bottom: 20px;
+    }
+
+    /* Larger clock for desktop */
+    .time-big {
+        font-size: 5rem;
+        margin-bottom: 5px;
+    }
+
+    /* Larger date display */
+    .date-row-3col {
+        margin-top: 10px;
+        padding: 0 15px;
+    }
+
+    .date-line-main {
+        font-size: 1.1rem;
+    }
+
+    .date-line-sub {
+        font-size: 0.95rem;
+    }
+
+    .day-highlight {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+    }
+
+    /* Larger circular timer for desktop */
+    .circular-timer-wrapper {
+        width: 300px;
+        height: 300px;
+    }
+
+    .timer-inner-content {
+        padding: 35px;
+    }
+
+    .prayer-icon-large {
+        width: 32px;
+        height: 32px;
+        margin-bottom: 5px;
+    }
+
+    #next-prayer-name {
+        font-size: 2rem;
+        letter-spacing: 2px;
+    }
+
+    .countdown-circular {
+        font-size: 3rem;
+        margin: 5px 0;
+    }
+
+    /* Show moon info on desktop */
+    #hero-moon-info {
+        display: block;
+        position: relative;
+        margin-top: 15px;
+        margin-bottom: 10px;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        opacity: 0.6;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    /* Prayer list as horizontal grid */
+    .prayer-scroll-container {
+        margin-bottom: 25px;
+    }
+
     .prayer-list-row {
-        width: 100%;
         display: grid;
         grid-template-columns: repeat(6, 1fr);
         gap: 15px;
@@ -1387,19 +1490,33 @@ input[type="checkbox"]:not(#switch) {
         flex-direction: column;
         justify-content: center;
         text-align: center;
-        padding: 25px 15px;
-        min-height: 140px;
+        padding: 20px 10px;
+        min-height: 120px;
+        gap: 8px;
+        border-radius: 16px;
     }
 
     .prayer-item .prayer-name {
         text-align: center;
-        margin: 10px 0;
+        margin: 8px 0;
+        font-size: 0.85rem;
+    }
+
+    .prayer-item .prayer-time {
+        font-size: 1.15rem;
+        margin-left: 0;
     }
 
     .prayer-item .prayer-icon {
         margin-right: 0;
         width: 28px;
         height: 28px;
+    }
+
+    /* Last update spacing */
+    .last-update-container {
+        margin-top: 30px;
+        font-size: 0.75rem;
     }
 }
 
