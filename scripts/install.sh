@@ -76,4 +76,11 @@ else
     echo "Systemd not found (not Linux?), skipping service installation."
 fi
 
+# 5. Configure Daily Restart
+echo "Configuring daily restart at midnight..."
+CRON_JOB="0 0 * * * sudo /sbin/shutdown -r now"
+# Add cron job if it doesn't exist
+(crontab -l 2>/dev/null | grep -Fv "$CRON_JOB"; echo "$CRON_JOB") | crontab -
+echo "✅ Daily reboot scheduled for midnight."
+
 echo "Installation complete!"
